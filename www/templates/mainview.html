@@ -1,0 +1,202 @@
+<ion-view view-title="Home" ng-init="init()">
+  
+  <div class="bar" ng-if="searchFlag_alt==1">
+      <label class="item-input search-text_alt" style="padding: 0px; padding-left: 10px;">
+        <input type="text" ng-model="main.searchItem" placeholder="Search" ng-keypress="keypress($event)">
+      </label>
+  
+      
+      <button class="button search_btn_alt" style="padding: 0px;" ng-click="searchResult()">
+        <div style="margin-top: -5px;">Search!</div>
+      </button>
+  
+  </div>
+  <ion-content on-scroll="getScrollPosition();">
+    
+    <ion-list>
+      <ion-item class="header-title">       
+        <div class="row">
+          <div class="col col-90">
+            <div ng-if="homeFlag==1">Home</div>
+            <div ng-if="searchFlag == 1">Search</div>
+            <div ng-if="channelFlag == 1">Channel</div>
+          </div>
+          
+          <div class="col">
+            <i style="margin-left: 10px; font-size: 26px;" class="icon ion-android-more-vertical"></i>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item class="header-tab">
+          <div  class="icon ion-android-home button_on" ng-if="homeFlag==1">
+          
+          </div>
+          <div class="icon ion-android-home button_off" ng-if="homeFlag==0" ng-click="turnOn(0)">
+          
+          </div>
+          <div class="icon ion-android-search button_on" ng-if="searchFlag==1">
+          
+          </div>
+          <div class="icon ion-android-search button_off" ng-if="searchFlag==0" ng-click="turnOn(1)">
+          
+          </div>
+          <div class="icon  ion-easel button_on" ng-if="channelFlag==1">
+          
+          </div>
+          <div class="icon  ion-easel button_off" ng-if="channelFlag==0" ng-click="turnOn(2)">
+          
+          </div>
+      </ion-item>
+      <ion-item class="header-search" ng-if="searchFlag == 1">
+        <div class="row">
+          <label class="col col-60 item-input search-text" style="padding: 0px; padding-left: 10px;">
+            <input type="text" ng-model="main.searchItem" placeholder="Search" ng-keypress="keypress($event)">
+          </label>
+     
+          
+          <button class="col button search_btn" style="padding: 0px;" ng-click="searchResult()">
+            <div style="margin-top: -5px;">Search!</div>
+          </button>
+      
+        </div>
+      </ion-item>
+      <!--<ion-item class="header-search1" ng-if="searchFlag == 1">
+        <div class="row">
+          <label class="col col-60 item-input search-text" style="padding: 0px; padding-left: 10px;">
+            <input type="text" ng-model="main.searchItem" placeholder="Search">
+          </label>
+     
+          
+          <button class="col button search_btn" style="padding: 0px;" ng-click="searchResult()">
+            <div style="margin-top: -5px;">Search!</div>
+          </button>
+      
+        </div>
+      </ion-item>-->
+      
+      <ion-item ng-if="homeFlag == 1">
+        <div class="subTitle">
+        Recently watched:
+        </div>
+        
+        <div class="homeAlert" ng-if="homeFlag_alt==1">
+        No recently watched videos found!
+        </div>
+        
+       
+      </ion-item>
+      <ion-item ng-if="channelFlag == 1" style="padding: 0;">
+        <img src="{{channelList.image.mobileImageUrl}}" class="channel_banner">
+        <div class="mark_container">
+          
+           <img src="{{channelList.thumbnails.default}}" class="channel_mark">
+           <div class="channel_name">
+             {{channelList.title}}
+           </div>
+           <img src="img/youtube.png" class="youtube_icon">
+           <div class="sub_title">
+             Subscribe
+            </div>
+            <div class="subNumber">
+              {{channelList.statistics.subscriberCount}} subscribers
+            </div>
+           
+        </div>
+        <div class="channel_des">
+          <!--<div class="channel_desname">
+            Pets And Animals Compilations
+          </div>-->
+          <div class="channel_desdetail">
+            {{channelList.description}}
+          </div>
+        </div>
+       
+      </ion-item>
+      <ion-item style="padding-bottom: 0px;" ng-repeat="item in channelList.allPlayListItems" ng-if="channelFlag == 1">
+        <div class="row" style="padding-bottom: 0px;">
+          <div class="col col-50" style="padding-bottom: 0px;">
+        
+            <img src="{{item.thumbnailMediumUrl}}" ng-click="goWatch_channel(item)" class="videoStatic">
+            <div class="duration">
+              6:01
+            </div>
+          </div>
+          <div class="col item-right" style="padding-bottom: 0px;">
+            <i style="float: right; font-size: 20px; padding-top: 5px;" class="icon ion-android-more-vertical"></i>
+            <div class="title" ng-click="goWatch_channel(item)" >
+              {{item.title}}
+            </div>
+            
+            <div class="category">
+              {{channelList.title}}
+            </div>
+             <div style="float: left; padding-right: 20px;" class="viewDate">
+              10 months ago
+            </div>
+             <div  class="viewCount">
+              16M views
+            </div>           
+          </div>
+        </div>     
+      </ion-item>
+      <ion-item style="padding-bottom: 0px;" ng-repeat="item in searchList" ng-if="searchFlag == 1">
+        <div class="row" style="padding-bottom: 0px;">
+          <div class="col col-50" style="padding-bottom: 0px;">
+        
+            <img src="{{item.imagesinfo[0].medium.url}}" ng-click="goWatch(item)" class="videoStatic">
+            <div class="duration">
+              6:01
+            </div>
+          </div>
+          <div class="col item-right" style="padding-bottom: 0px;">
+            <i style="float: right; font-size: 20px; padding-top: 5px;" class="icon ion-android-more-vertical"></i>
+            <div class="title" ng-click="goWatch(item)" >
+              {{item.videoTitle}}
+            </div>
+            
+            <div class="category" ng-click="goChannel(item)">
+              {{item.channelTitle}}
+            </div>
+             <div style="float: left; padding-right: 20px;" class="viewDate">
+              10 months ago
+            </div>
+             <div  class="viewCount">
+              16M views
+            </div>           
+          </div>
+        </div>     
+      </ion-item>
+      <ion-item style="padding-bottom: 0px;"  ng-repeat="item in historyList" ng-if="homeFlag == 1">
+        <div class="row" style="padding-bottom: 0px;">
+          <div class="col col-50" style="padding-bottom: 0px;">
+        
+            <img src="{{item.imagesinfo[0].medium.url}}" ng-click="goWatch(item)" class="videoStatic">
+            <div class="duration">
+              6:01
+            </div>
+          </div>
+          <div class="col item-right" style="padding-bottom: 0px;">
+            <i style="float: right; font-size: 20px; padding-top: 5px;" class="icon ion-android-more-vertical"></i>
+            <div class="title" ng-click="goWatch(item)" >
+              {{item.videoTitle}}
+            </div>
+            
+            <div class="category" ng-click="goChannel(item)">
+              {{item.channelTitle}}
+            </div>
+             <div style="float: left; padding-right: 20px;" class="viewDate">
+              10 months ago
+            </div>
+             <div  class="viewCount">
+              16M views
+            </div>           
+          </div>
+        </div>     
+      </ion-item>
+      
+      
+      
+
+    </ion-list>
+  </ion-content>
+</ion-view>
